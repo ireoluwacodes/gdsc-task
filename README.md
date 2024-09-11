@@ -45,7 +45,7 @@
   This will start the server on http://localhost:3000
 
 
-# Script 
+# Scripts 
   ```
   npm start
   ```

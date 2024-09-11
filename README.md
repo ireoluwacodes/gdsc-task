@@ -45,11 +45,16 @@
   This will start the server on http://localhost:3000
 
 
-# Scripts
-  npm start: Runs the app in production mode.
+# Script 
+  ```
+  npm start
+  ```
+   Runs the app in production mode.
 
-  npm run dev: Runs the app in development 
-  mode with auto-reload (using nodemon).
+  ```
+  npm run dev
+  ```
+  Runs the app in development mode with auto-reload (using nodemon).
 
 # Built With
   [Express](https://expressjs.com/) - Web framework for Node.js

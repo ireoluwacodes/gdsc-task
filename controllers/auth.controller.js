@@ -10,6 +10,7 @@ const { validateDbId } = require("../utils/mongoId.utils");
 const cookieConfig = {
   httpOnly: true,
   secure: true,
+  sameSite: "None",
   maxAge: 72 * 60 * 60 * 1000,
 };
 
@@ -33,7 +34,12 @@ const register = AsyncHandler(async (req, res, next) => {
     req.user = {
       message: "User Created Successfully",
       status: CREATED,
-      data: user,
+      data: {
+        ...user._doc,
+        hash: undefined,
+        updatedAt: undefined,
+        loginScheme: undefined,
+      },
     };
     next();
   } catch (error) {
@@ -45,9 +51,9 @@ const register = AsyncHandler(async (req, res, next) => {
 const login = AsyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ email }).select(
-      "fullName email hash phone avatar loginScheme"
-    );
+    const findUser = await User.findOne({ email })
+      .select("fullName email hash phone avatar loginScheme")
+      .lean();
     if (!findUser)
       throw new UnauthorizedRequestError("User not found, Please register");
     // user must have registered with email
@@ -85,9 +91,15 @@ const login = AsyncHandler(async (req, res, next) => {
 const refresh = AsyncHandler(async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    const findUser = await User.findOne({ refreshToken });
+    const findUser = await User.findOne({ refreshToken }).select(
+      "email fullName avatar phone"
+    );
     if (!findUser) {
-      res.clearCookie("refreshToken", cookieConfig);
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      });
       throw new ForbiddenRequestError("Invalid Refresh - User logged out");
     }
     const token = await signToken(findUser._id);
@@ -96,14 +108,10 @@ const refresh = AsyncHandler(async (req, res, next) => {
       status: OK,
       data: {
         token,
-        user: {
-          ...findUser,
-          hash: undefined,
-          updatedAt: undefined,
-          refreshToken: undefined,
-        },
+        user: findUser,
       },
     };
+    next()
   } catch (error) {
     next(error);
   }
@@ -114,11 +122,16 @@ const logout = AsyncHandler(async (req, res, next) => {
     const { userId } = req;
     await validateDbId(userId);
     await User.findByIdAndUpdate(userId, { refreshToken: " " });
-    res.clearCookie("refreshToken", cookieConfig);
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    });
     req.user = {
       message: "User logged out",
       status: OK,
     };
+    next()
   } catch (error) {
     next(error);
   }

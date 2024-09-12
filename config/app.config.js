@@ -29,11 +29,13 @@ const selectDb = () => {
 
 const app = express();
 
-app.use(cors({}));
-
-// origin: ["http://localhost:3000"],
-// methods: ["POST, GET, PUT, PATCH, DELETE"],
-// credentials: true,
+app.use(
+  cors({
+    origin: "*",
+    methods: ["POST, GET, PUT, PATCH, DELETE"],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

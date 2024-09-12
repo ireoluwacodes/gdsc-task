@@ -6,6 +6,10 @@ const { JsonWebTokenError } = require("jsonwebtoken");
 
 const authMiddleware = AsyncHandler(async (req, res, next) => {
   try {
+    if (!req.headers.authorization)
+      throw new UnauthorizedRequestError(
+        "Invalid token, pass token as a Bearer in authorization headers"
+      );
     const [scheme, token] = req.headers.authorization.split(" ");
     if (scheme == "Bearer") {
       if (!token || token == "") {

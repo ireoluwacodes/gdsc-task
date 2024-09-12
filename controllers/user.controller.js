@@ -6,6 +6,8 @@ const ForbiddenRequestError = require("../exceptions/forbidden.exception");
 const { cloudinaryUpload } = require("../config/cloudinary.config");
 const { Job } = require("../models/job.model");
 const { Skill } = require("../models/skill.model");
+const { OK } = require("http-status");
+const fs = require("fs");
 
 const getAllUsers = AsyncHandler(async (req, res, next) => {
   try {
@@ -47,7 +49,6 @@ const getAllUsers = AsyncHandler(async (req, res, next) => {
     if (jobUserIds.length > 0) {
       filter._id = { $in: jobUserIds };
     }
-
     // Fetch users based on the combined filter
     const users = await User.find(filter).populate("skills");
 
@@ -59,6 +60,7 @@ const getAllUsers = AsyncHandler(async (req, res, next) => {
         data: users,
       },
     };
+    next();
   } catch (error) {
     next(error);
   }

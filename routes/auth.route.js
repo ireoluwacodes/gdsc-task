@@ -19,6 +19,7 @@ const authRouter = Router();
 authRouter
   .route("/register")
   .post(validator(createUserSchema), register, successHandler);
+
 authRouter.route("/login").post(validator(loginSchema), login, successHandler);
 
 authRouter

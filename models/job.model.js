@@ -10,11 +10,6 @@ const jobSchema = new mongoose.Schema(
     location: {
       type: String,
     },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
     companyName: {
       type: String,
     },

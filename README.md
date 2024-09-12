@@ -1,11 +1,16 @@
 # GDSC BOWEN TASK
 
-  This is a simple Express.js application using MongoDB for the database. The app allows users to interact with a RESTful API to perform CRUD operations.
+  This is a simple Express.js application using MongoDB for the database. The app demonstrates simple auth, google and apple social auth using passport.js. It also exposes CRUD endpoints for onboarding and user profile.
 
 # Features
 
   Express.js backend
+
   MongoDB integration using Mongoose
+
+  Passport.js auth
+
+  Cloudinary file upload
 
 # Prerequisites
 
@@ -62,3 +67,5 @@
   [MongoDB](https://www.mongodb.com/) - NoSQL database
 
   [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
+
+  [Passport.js](https://passportjs.org) - Social auth 

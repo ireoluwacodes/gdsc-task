@@ -5,6 +5,7 @@ const { hashPassword, comparePassword } = require("../utils/hashing.utils");
 const { CREATED, OK } = require("http-status");
 const UnauthorizedRequestError = require("../exceptions/unauthorized.exception");
 const { signToken, signRefreshToken } = require("../utils/token.utils");
+const { validateDbId } = require("../utils/mongoId.utils");
 
 const cookieConfig = {
   httpOnly: true,
@@ -111,6 +112,7 @@ const refresh = AsyncHandler(async (req, res, next) => {
 const logout = AsyncHandler(async (req, res, next) => {
   try {
     const { userId } = req;
+    await validateDbId(userId);
     await User.findByIdAndUpdate(userId, { refreshToken: " " });
     res.clearCookie("refreshToken", cookieConfig);
     req.user = {
@@ -122,9 +124,49 @@ const logout = AsyncHandler(async (req, res, next) => {
   }
 });
 
+const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
+  try {
+    const user = req.user;
+    // sign access and refresh token to keep a user logged in
+    const accessToken = await signToken(user._id);
+
+    const myUser = await User.findByIdAndUpdate(
+      user._id,
+      { accessToken, refreshValidTill: Date.now() + 96 * 60 * 60 * 1000 },
+      { new: true }
+    ).lean();
+
+    const sanitizedUser = {
+      ...myUser,
+      accessToken: undefined,
+      refreshValidTill: undefined,
+      hash: undefined,
+      _v: undefined,
+    };
+
+    return res.status(OK).json({
+      status: "success",
+      statusCode: OK,
+      token: accessToken,
+      data: sanitizedUser,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const handleAppleAuth = AsyncHandler(async (req, res, next) => {
+  try {
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = {
   register,
   login,
   refresh,
   logout,
+  handleAppleAuth,
+  handleGoogleAuth,
 };

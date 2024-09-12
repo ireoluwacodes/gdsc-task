@@ -29,7 +29,7 @@ const uploadPhoto = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
   limits: {
-    fileSize: 20000000,
+    fileSize: 1048576, // 1MB in bytes
   },
 });
 

@@ -16,6 +16,8 @@ const {
   sessionSecret,
 } = require("./constants.config");
 const authRouter = require("../routes/auth.route");
+const userRouter = require("../routes/user.route");
+const onboardingRouter = require("../routes/onboarding.route");
 
 const selectDb = () => {
   if (nodeEnv == "production") {
@@ -55,6 +57,8 @@ app.use(passport.session());
 
 app.use(router);
 app.use("/api/auth", authRouter);
+app.use("/api/user", userRouter);
+app.use("/api/onboarding", onboardingRouter);
 
 app.use(notFound);
 app.use(errHandler);

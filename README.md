@@ -61,6 +61,11 @@
   ```
   Runs the app in development mode with auto-reload (using nodemon).
 
+# API Documentation can be found below
+  ```
+  https://documenter.getpostman.com/view/22684334/2sAXqne4d5
+  ```
+
 # Built With
   [Express](https://expressjs.com/) - Web framework for Node.js
 

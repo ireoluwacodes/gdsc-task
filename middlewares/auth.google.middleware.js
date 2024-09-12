@@ -27,12 +27,11 @@ passport.use(
             fullName: `${profile.displayName}`,
             email: profile.emails[0].value,
             loginScheme: "google",
-            displayImage: dp,
-            role: 3,
+            avatar: dp,
           });
         } else {
           if (user.loginScheme !== "google")
-            throw new Error(
+            throw new BadRequestError(
               `Invalid login scheme - login with ${user.loginScheme}`
             );
         }
@@ -44,15 +43,5 @@ passport.use(
     }
   )
 );
-
-// passport.serializeUser((user, done) => {
-//   console.log("serialize", user);
-//   done(null, user); // Store user in session
-// });
-
-// passport.deserializeUser((user, done) => {
-//   console.log("deserialize", user);
-//   done(null, user);
-// });
 
 module.exports = passport;

@@ -25,12 +25,6 @@ const userSchema = new mongoose.Schema(
       required: true,
       enum: ["email", "google", "apple"],
     },
-    jobs: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Job",
-      },
-    ],
     skills: [
       {
         type: mongoose.Schema.Types.ObjectId,

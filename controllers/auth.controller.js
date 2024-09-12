@@ -45,7 +45,9 @@ const register = AsyncHandler(async (req, res, next) => {
 const login = AsyncHandler(async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ email }).select();
+    const findUser = await User.findOne({ email }).select(
+      "fullName email hash phone avatar loginScheme"
+    );
     if (!findUser)
       throw new UnauthorizedRequestError("User not found, Please register");
     // user must have registered with email
@@ -71,8 +73,6 @@ const login = AsyncHandler(async (req, res, next) => {
         user: {
           ...findUser,
           hash: undefined,
-          updatedAt: undefined,
-          refreshToken: undefined,
         },
       },
     };
@@ -128,45 +128,45 @@ const handleGoogleAuth = AsyncHandler(async (req, res, next) => {
   try {
     const user = req.user;
     // sign access and refresh token to keep a user logged in
-    const accessToken = await signToken(user._id);
+    const token = await signToken(user._id);
+    const refreshToken = await signRefreshToken(user._id);
 
     const myUser = await User.findByIdAndUpdate(
       user._id,
-      { accessToken, refreshValidTill: Date.now() + 96 * 60 * 60 * 1000 },
+      { refreshToken },
       { new: true }
-    ).lean();
+    )
+      .lean()
+      .select("email fullName avatar phone");
 
-    const sanitizedUser = {
-      ...myUser,
-      accessToken: undefined,
-      refreshValidTill: undefined,
-      hash: undefined,
-      _v: undefined,
+    res.cookie("refreshToken", refreshToken, cookieConfig);
+
+    req.user = {
+      message: "Login Successful",
+      status: OK,
+      data: {
+        token,
+        user: myUser,
+      },
     };
-
-    return res.status(OK).json({
-      status: "success",
-      statusCode: OK,
-      token: accessToken,
-      data: sanitizedUser,
-    });
+    next();
   } catch (error) {
     next(error);
   }
 });
 
-const handleAppleAuth = AsyncHandler(async (req, res, next) => {
-  try {
-  } catch (error) {
-    next(error);
-  }
-});
+// const handleAppleAuth = AsyncHandler(async (req, res, next) => {
+//   try {
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 module.exports = {
   register,
   login,
   refresh,
   logout,
-  handleAppleAuth,
+  // handleAppleAuth,
   handleGoogleAuth,
 };

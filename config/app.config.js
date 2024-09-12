@@ -15,6 +15,7 @@ const {
   webMUrl,
   sessionSecret,
 } = require("./constants.config");
+const authRouter = require("../routes/auth.route");
 
 const selectDb = () => {
   if (nodeEnv == "production") {
@@ -53,6 +54,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(router);
+app.use("/api/auth", authRouter);
 
 app.use(notFound);
 app.use(errHandler);

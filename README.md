@@ -69,3 +69,6 @@
   [Mongoose](https://mongoosejs.com/) - MongoDB object modeling for Node.js
 
   [Passport.js](https://passportjs.org) - Social auth 
+
+# Entity - Relationship Diagram
+![ERD](./GDSC%20TASK(ER%20DIAGRAM).png)

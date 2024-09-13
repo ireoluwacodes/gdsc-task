@@ -19,8 +19,6 @@ const {
 
 const onboardingRouter = Router();
 
-onboardingRouter.route("/experience").get(authMiddleware, getWorkExperiences);
-
 onboardingRouter
   .route("/experience")
   .post(
@@ -43,12 +41,24 @@ onboardingRouter
   .route("/experience/:id")
   .delete(authMiddleware, deleteWorkExperience, successHandler);
 
-onboardingRouter.route("/skills/:id").post(authMiddleware, addSkills);
+onboardingRouter
+  .route("/experience")
+  .get(authMiddleware, getWorkExperiences, successHandler);
 
-onboardingRouter.route("/skills/all").get(authMiddleware, getAllSkills);
+onboardingRouter
+  .route("/skills/:id")
+  .post(authMiddleware, addSkills, successHandler);
 
-onboardingRouter.route("/skills/user").get(authMiddleware, getMySkills);
+onboardingRouter
+  .route("/skills/all")
+  .get(authMiddleware, getAllSkills, successHandler);
 
-onboardingRouter.route("/skills/:id").delete(authMiddleware, deleteSkill);
+onboardingRouter
+  .route("/skills/user")
+  .get(authMiddleware, getMySkills, successHandler);
+
+onboardingRouter
+  .route("/skills/:id")
+  .delete(authMiddleware, deleteSkill, successHandler);
 
 module.exports = onboardingRouter;
